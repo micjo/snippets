@@ -7,27 +7,33 @@
 
 #include "thread_example.h"
 
+using namespace std::literals;
+
 namespace {
-    std::mutex _mutex;
-    std::condition_variable _cv;
-    bool _killThread{0};
+
+    struct ThreadKiller {
+        std::mutex _mutex;
+        std::condition_variable _cv;
+        bool _killThread{false};
+    };
+
+    struct ThreadKiller _tk;
 
     constexpr const char* threadName = "Thread_1";
 }
 
-
-using namespace std::literals;
-
-ThreadExample::ThreadExample() {}
+ThreadExample::ThreadExample()
+{
+}
 
 ThreadExample::~ThreadExample()
 {
     {
-        std::lock_guard<std::mutex> lock(_mutex);
-        _killThread=true;
+        std::lock_guard<std::mutex> lock(_tk._mutex);
+        _tk._killThread=true;
     }
     std::cout << "Destructor> notifying" << std::endl;
-    _cv.notify_all();
+    _tk._cv.notify_all();
 }
 
 void ThreadExample::create_and_detach_thread()
@@ -38,14 +44,14 @@ void ThreadExample::create_and_detach_thread()
         pthread_setname_np(pthread_self(), threadName);
 
         // This obtains the mutex lock
-        std::unique_lock<std::mutex> lock(_mutex);
+        std::unique_lock<std::mutex> lock(_tk._mutex);
 
         while (true) {
             // Do things periodically every 5 seconds
             std::cout << threadName << "> doing things" << std::endl;
 
             // Bail out on destruction. Using predicate to prevent spurious wakeups
-            if ( _cv.wait_for(lock, std::chrono::seconds(5), [] {return _killThread;} )) {
+            if ( _tk._cv.wait_for(lock, std::chrono::seconds(5), [] {return _tk._killThread;} )) {
                 std::cout << threadName << "> got killed" << std::endl;
                 break;
             }
