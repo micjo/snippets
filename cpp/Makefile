@@ -1,10 +1,19 @@
 CXX=g++
+LD=g++
 CXXFLAGS=-std=c++14 -Wall -pthread
+OBJ=obj
+OUT=out
 
-thread:
-	$(CXX) $(CXXFLAGS) -o thread thread_example.cpp
+thread: $(OBJ)/thread_example.o
+	@echo "=== Building Thread Example ==="
+	mkdir -p $(OUT)
+	$(LD) $(CXXFLAGS) $^ -o $(OUT)/$@
 
-redirect:
-	$(CXX) $(CXXFLAGS) -o redirect output_redirection_example.cpp
 clean:
-	rm -f *.o thread	
+	rm -rf obj out
+
+
+$(OBJ)/%.o: %.cpp
+	@echo "=== Compiling cpp files ==="
+	mkdir -p $(OBJ)
+	$(CXX) -c $(CXXFLAGS) $< -o $@
