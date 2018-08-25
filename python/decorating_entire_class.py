@@ -1,5 +1,12 @@
 #!/usr/bin/python
 
+
+def time_this(orig_func):
+    print "timing"
+    def wrapper():
+        return orig_func()
+    return wrapper
+
 def time_all_class_methods(Decoratee):
     class Decorator(object):
         def __init__(self):
@@ -10,9 +17,13 @@ def time_all_class_methods(Decoratee):
             #check if attribute exists in non-overwritten function
             try:
                 x = super(Decorator,self).__getattribute__(s)
+            except AttributeError:
+                x = self.oInstance.__getattribute__(s)
+
+            if callable(x):
+                return time_this(x)
+            else:
                 return x
-            except:
-                return self.oInstance.__getattribute__(s)
 
     return Decorator
 
