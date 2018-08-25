@@ -1,18 +1,13 @@
 #!/usr/bin/python
 
 def time_decorator(orig_function):
-    def wrapper():
-        return orig_function()
+    def wrapper(*args, **kwargs):
+        return orig_function(*args, **kwargs)
     return wrapper
 
 
 @time_decorator
-def display():
-    print ">>> This is a simple display function"
-
-@time_decorator
 def display(name, age):
-    print ">>> display function called with arguments {} {}".format(name,age)
+    print "display function called with arguments({} {})".format(name,age)
 
-
-display()
+display("John", 22)
