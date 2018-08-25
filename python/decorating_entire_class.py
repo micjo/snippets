@@ -3,7 +3,7 @@
 def time_all_class_methods(Decoratee):
     class Decorator(object):
         def __init__(self):
-            self.oInstance = Decoratee
+            self.oInstance = Decoratee()
 
         def __getattribute__(self,s):
 
