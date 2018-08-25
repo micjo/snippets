@@ -12,8 +12,16 @@ def time_decorator(orig_function):
         return result
     return wrapper
 
+def log_call_decorator(orig_function):
+    import logging
+    logging.basicConfig(filename='{}.log'.format(orig_function.__name__), level=logging.INFO)
+    def wrapper(*args, **kwargs):
+        logging.info("Function <{}> ran with args:{} and kwargs:{}"
+                .format(orig_function.__name__,args,kwargs))
+        return orig_function(*args, **kwargs)
+    return wrapper
 
-@time_decorator
+@log_call_decorator
 def display(name, age):
     import time
     time.sleep(1)
