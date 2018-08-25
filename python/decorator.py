@@ -10,4 +10,9 @@ def time_decorator(orig_function):
 def display():
     print ">>> This is a simple display function"
 
+@time_decorator
+def display(name, age):
+    print ">>> display function called with arguments {} {}".format(name,age)
+
+
 display()
