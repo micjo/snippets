@@ -15,18 +15,21 @@ def time_measure(orig_func):
         return result
     return wrapper
 
-def log_call_to_file(orig_func):
-    import logging
-    logging.basicConfig(filename='{}.log'.format(orig_func.__name__), level=logging.INFO)
+def log_call_to_specific_file(file_name):
+    def log_call_to_file(orig_func):
+        import logging
+        logging.basicConfig(filename=file_name, level=logging.INFO)
 
-    @wraps(orig_func)
-    def wrapper(*args, **kwargs):
-        logging.info("Function <{}> ran with args:{} and kwargs:{}"
+        @wraps(orig_func)
+        def wrapper(*args, **kwargs):
+            logging.info("Function <{}> ran with args:{} and kwargs:{}"
                 .format(orig_func.__name__,args,kwargs))
-        return orig_func(*args, **kwargs)
-    return wrapper
+            return orig_func(*args, **kwargs)
+        return wrapper
+    return log_call_to_file
 
-@log_call_to_file
+
+@log_call_to_specific_file("logging.txt")
 @time_measure
 def display(name, age):
     import time
@@ -34,3 +37,14 @@ def display(name, age):
     print "display function called with arguments({} {})".format(name,age)
 
 display("John", 22)
+
+# This is equivalent to:
+
+def display(name, age):
+    import time
+    time.sleep(1)
+    print "display function called with arguments({} {})".format(name,age)
+
+display = log_call_to_specific_file("logging.txt")(time_measure(display))
+
+display("John",22)
