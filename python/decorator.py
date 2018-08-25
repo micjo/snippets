@@ -9,11 +9,12 @@ def time_decorator(orig_function):
     print "> end: time_decorator"
     return wrapper
 
-def display():
-    print ">>> This is a simple display function"
 
 print "start: Decorating display function"
-display = time_decorator(display)
+@time_decorator
+def display():
+    print ">>> This is a simple display function"
 print "end: Decorating display function"
+
 
 display()
