@@ -1,6 +1,5 @@
 #!/usr/bin/python
 
-
 def time_this(orig_func):
     import time
     def wrapper():
@@ -32,6 +31,7 @@ def time_all_class_methods(Decoratee):
 
     return Decorator
 
+@time_all_class_methods
 class Animal(object):
     def __init__(self):
         pass
@@ -40,7 +40,6 @@ class Animal(object):
         print "Walking"
 
 
-Animal = time_all_class_methods(Animal)
 
 a = Animal()
 a.walk()
