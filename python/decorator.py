@@ -20,6 +20,7 @@ def log_call_to_file(orig_func):
         return orig_func(*args, **kwargs)
     return wrapper
 
+@log_call_to_file
 @time_measure
 def display(name, age):
     import time
