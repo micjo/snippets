@@ -7,7 +7,14 @@ def time_all_class_methods(Decoratee):
 
         def __getattribute__(self,s):
             print "trala"
-            return self.oInstance.s
+
+            #check if attribute exists in non-overwritten function
+            x = super(Decorator,self).__getattribute__(s)
+            if ( x ):
+                return x
+            else:
+                return self.oInstance.s
+
     return Decorator
 
 class Animal(object):
