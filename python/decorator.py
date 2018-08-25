@@ -2,7 +2,7 @@
 
 def time_decorator(orig_function):
     def wrapper():
-        result = orig_function()
+        return orig_function()
     return wrapper
 
 
